@@ -12,6 +12,7 @@ from subprocess import check_call
 import pkg_resources
 import glob
 import optparse
+from pip._internal import main
 
 try:
     import wheel as _; _
@@ -155,7 +156,7 @@ def pip_run_command(pip_args):
     if version < (1, 1):
         raise RuntimeError("pip >= 1.1 required, but %s is installed"
                            %(version, ))
-    res = pip.main(pip_args)
+    res = main(pip_args)
     if res != 0:
         raise PipError("pip failed with status %s while running: %s"
                        %(res, pip_args))
@@ -410,7 +411,7 @@ def pip2tgz(argv=sys.argv):
     pkg_file_set = lambda: set(globall(full_glob_paths))
     old_pkgs = pkg_file_set()
 
-    pip_run_command(['install', '-d', outdir] + argv[2:])
+    pip_run_command(['download', '-d', outdir] + argv[2:])
 
     os.chdir(outdir)
     new_pkgs = pkg_file_set() - old_pkgs
